@@ -2,14 +2,25 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
   {% for page in pages %}
+  <!-- English Dedicated URL -->
   <url>
-    <loc>{{ page.loc }}</loc>
+    <loc>{{ page.loc_en }}</loc>
     {% if page.lastmod %}<lastmod>{{ page.lastmod }}</lastmod>{% endif %}
     {% if page.changefreq %}<changefreq>{{ page.changefreq }}</changefreq>{% endif %}
     {% if page.priority %}<priority>{{ page.priority }}</priority>{% endif %}
-    <xhtml:link rel="alternate" hreflang="en" href="{{ page.loc }}?lang=en"/>
-    <xhtml:link rel="alternate" hreflang="hi" href="{{ page.loc }}?lang=hi"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="{{ page.loc }}"/>
+    <xhtml:link rel="alternate" hreflang="en" href="{{ page.loc_en }}"/>
+    <xhtml:link rel="alternate" hreflang="hi" href="{{ page.loc_hi }}"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="{{ page.loc_en }}"/>
+  </url>
+  <!-- Hindi Dedicated URL -->
+  <url>
+    <loc>{{ page.loc_hi }}</loc>
+    {% if page.lastmod %}<lastmod>{{ page.lastmod }}</lastmod>{% endif %}
+    {% if page.changefreq %}<changefreq>{{ page.changefreq }}</changefreq>{% endif %}
+    <priority>{{ (page.priority|float * 0.95)|round(2) }}</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="{{ page.loc_en }}"/>
+    <xhtml:link rel="alternate" hreflang="hi" href="{{ page.loc_hi }}"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="{{ page.loc_en }}"/>
   </url>
   {% endfor %}
 </urlset>
