@@ -12,7 +12,7 @@ POSTS_FILE = os.path.join(os.path.dirname(__file__), 'data', 'posts.json')
 # Set to your Google Search Console token
 GSC_VERIFICATION_CODE = os.environ.get(
     'GSC_VERIFICATION_CODE', 
-    'cccccdc404ce1a05'
+    'fXvbrt1YglgkP69jPyR6BJ-wCXLderLSyWjohy66ywY'
 )
 
 @app.context_processor
@@ -151,11 +151,6 @@ Sitemap: {base_url}/sitemap.xml
 def google_exact_verification_file():
     """Exact Google Search Console verification endpoint."""
     return Response("google-site-verification: googlecccccdc404ce1a05.html", mimetype='text/html')
-
-@app.route('/google<token>.html')
-def google_verification_file(token):
-    """Support Google Search Console HTML verification file upload method."""
-    return Response(f"google-site-verification: google{token}.html", mimetype='text/html')
 
 @app.route('/api/preview-youtube', methods=['POST'])
 def api_preview_youtube():
