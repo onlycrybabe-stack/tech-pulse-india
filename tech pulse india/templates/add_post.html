@@ -1,0 +1,256 @@
+{% extends "base.html" %}
+
+{% block title %}Add Video Post — Tech Pulse India{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto px-4 sm:px-6 py-8">
+
+    <!-- Header -->
+    <div class="mb-6">
+        <a href="/" class="text-xs text-slate-500 hover:text-slate-900 transition-colors inline-flex items-center gap-1.5 mb-3 font-medium">
+            ← <span data-lang="en">Back to Articles</span><span data-lang="hi" class="hindi-text hidden">वापस</span>
+        </a>
+        <h1 class="text-xl sm:text-2xl font-bold text-slate-900 mb-1">
+            Add Article from YouTube
+        </h1>
+        <p class="text-xs text-slate-500">
+            Paste a YouTube video link to extract video details and publish a bilingual tech post.
+        </p>
+    </div>
+
+    <!-- Main Card Form -->
+    <div class="border border-slate-200 bg-white rounded-2xl p-6 space-y-6 shadow-sm">
+
+        <!-- Step 1: URL input -->
+        <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1.5">YouTube Video URL</label>
+            <div class="flex flex-col sm:flex-row gap-2">
+                <input 
+                    type="text" 
+                    id="youtube-url-input" 
+                    placeholder="https://www.youtube.com/watch?v=..." 
+                    class="flex-grow px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-400 focus:bg-white transition-all"
+                >
+                <button 
+                    type="button" 
+                    onclick="fetchYouTubeData()" 
+                    id="fetch-btn"
+                    class="px-4 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-medium transition-colors flex items-center justify-center gap-1.5 flex-shrink-0 shadow-sm"
+                >
+                    <span id="fetch-btn-text">Fetch Info</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Video Preview (Hidden until fetched) -->
+        <div id="video-preview-card" class="hidden p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center gap-3">
+            <img id="preview-thumb" src="" alt="Thumbnail" class="w-28 aspect-video object-cover rounded-lg bg-slate-200 border border-slate-200">
+            <div class="space-y-0.5 text-xs">
+                <div id="preview-channel" class="text-slate-500 font-medium text-[11px]">Channel Name</div>
+                <h4 id="preview-title" class="text-xs font-bold text-slate-900 line-clamp-1">Video Title</h4>
+                <div id="preview-duration" class="text-slate-400 text-[11px]">Duration</div>
+            </div>
+        </div>
+
+        <!-- Step 2: Content fields -->
+        <div class="space-y-4 pt-4 border-t border-slate-100">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Category</label>
+                    <select id="post-category" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 focus:outline-none focus:border-slate-400 focus:bg-white transition-all">
+                        <option value="Smartphones">Smartphones (स्मार्टफोन)</option>
+                        <option value="Laptops">Laptops (लैपटॉप)</option>
+                        <option value="Earphones & Audio">Earphones &amp; Audio (ईयरफोन व ऑडियो)</option>
+                        <option value="Smartwatches">Smartwatches (स्मार्टवॉच)</option>
+                        <option value="Chargers & Power">Chargers &amp; Power (चार्जर व पावर)</option>
+                        <option value="Desktops & PCs">Desktops &amp; PCs (डेस्कटॉप व पीसी)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Tags (comma separated)</label>
+                    <input type="text" id="post-tags" placeholder="e.g. OLED, Snapdragon, Battery" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-400 focus:bg-white transition-all">
+                </div>
+            </div>
+
+            <!-- English Fields -->
+            <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-3">
+                <div class="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-cyan-600"></span>
+                    <span>English Content</span>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-medium text-slate-600 mb-1">Title (EN)</label>
+                    <input type="text" id="title-en" class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs text-slate-900 focus:outline-none focus:border-slate-400">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-medium text-slate-600 mb-1">Summary (EN)</label>
+                    <textarea id="summary-en" rows="2" class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs text-slate-900 focus:outline-none focus:border-slate-400"></textarea>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-medium text-slate-600 mb-1">Article Content (HTML/Markdown)</label>
+                    <textarea id="content-en" rows="5" class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs text-slate-900 focus:outline-none focus:border-slate-400 font-mono"></textarea>
+                </div>
+            </div>
+
+            <!-- Hindi Fields -->
+            <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-3">
+                <div class="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                    <span class="hindi-text">हिन्दी सामग्री (Hindi Content)</span>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-medium text-slate-600 mb-1 hindi-text">शीर्षक (Title HI)</label>
+                    <input type="text" id="title-hi" class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs text-slate-900 focus:outline-none focus:border-slate-400 hindi-text">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-medium text-slate-600 mb-1 hindi-text">संक्षिप्त सारांश (Summary HI)</label>
+                    <textarea id="summary-hi" rows="2" class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs text-slate-900 focus:outline-none focus:border-slate-400 hindi-text"></textarea>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-medium text-slate-600 mb-1 hindi-text">विस्तृत लेख (Article Content HI)</label>
+                    <textarea id="content-hi" rows="5" class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs text-slate-900 focus:outline-none focus:border-slate-400 font-mono hindi-text"></textarea>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="pt-2">
+                <button 
+                    type="button" 
+                    onclick="submitPost()" 
+                    id="submit-btn"
+                    class="w-full py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold transition-colors flex items-center justify-center gap-2 shadow-sm"
+                >
+                    <i data-lucide="check" class="w-4 h-4"></i>
+                    <span id="submit-btn-text">Publish Post</span>
+                </button>
+            </div>
+            
+            <div id="status-msg" class="text-xs text-center hidden"></div>
+
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    let currentVideoMeta = null;
+
+    async function fetchYouTubeData() {
+        const url = document.getElementById('youtube-url-input').value.trim();
+        if (!url) {
+            alert('Please enter a YouTube video URL');
+            return;
+        }
+
+        const btn = document.getElementById('fetch-btn');
+        const btnText = document.getElementById('fetch-btn-text');
+        btnText.innerText = 'Fetching...';
+        btn.disabled = true;
+
+        try {
+            const res = await fetch('/api/preview-youtube', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ url })
+            });
+            const data = await res.json();
+
+            if (data.status === 'ok') {
+                currentVideoMeta = data.metadata;
+                document.getElementById('video-preview-card').classList.remove('hidden');
+                document.getElementById('preview-thumb').src = currentVideoMeta.thumbnail;
+                document.getElementById('preview-title').innerText = currentVideoMeta.title;
+                document.getElementById('preview-channel').innerText = currentVideoMeta.channel;
+                document.getElementById('preview-duration').innerText = currentVideoMeta.duration_string || 'Ready';
+
+                // Pre-populate title
+                if (!document.getElementById('title-en').value) {
+                    document.getElementById('title-en').value = currentVideoMeta.title;
+                }
+                if (!document.getElementById('summary-en').value && currentVideoMeta.description) {
+                    document.getElementById('summary-en').value = currentVideoMeta.description.slice(0, 200) + '...';
+                }
+            } else {
+                alert('Could not fetch video info: ' + (data.error || 'Unknown error'));
+            }
+        } catch(e) {
+            alert('Error fetching video: ' + e.message);
+        } finally {
+            btnText.innerText = 'Fetch Info';
+            btn.disabled = false;
+        }
+    }
+
+    async function submitPost() {
+        const url = document.getElementById('youtube-url-input').value.trim();
+        const titleEn = document.getElementById('title-en').value.trim();
+        const summaryEn = document.getElementById('summary-en').value.trim();
+        const contentEn = document.getElementById('content-en').value.trim();
+
+        const titleHi = document.getElementById('title-hi').value.trim() || titleEn;
+        const summaryHi = document.getElementById('summary-hi').value.trim() || summaryEn;
+        const contentHi = document.getElementById('content-hi').value.trim() || contentEn;
+
+        const category = document.getElementById('post-category').value;
+        const tagsInput = document.getElementById('post-tags').value;
+        const tags = tagsInput ? tagsInput.split(',').map(t => t.trim()).filter(Boolean) : ['Tech'];
+
+        if (!url || !titleEn) {
+            alert('Please fill in at least the YouTube URL and English title.');
+            return;
+        }
+
+        const submitBtn = document.getElementById('submit-btn');
+        const submitBtnText = document.getElementById('submit-btn-text');
+        submitBtnText.innerText = 'Publishing...';
+        submitBtn.disabled = true;
+
+        const statusMsg = document.getElementById('status-msg');
+        statusMsg.classList.add('hidden');
+
+        try {
+            const res = await fetch('/api/add-post', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    url,
+                    category,
+                    tags,
+                    en: {
+                        title: titleEn,
+                        summary: summaryEn,
+                        content: contentEn || `<p>${summaryEn}</p>`
+                    },
+                    hi: {
+                        title: titleHi,
+                        summary: summaryHi,
+                        content: contentHi || `<p>${summaryHi}</p>`
+                    }
+                })
+            });
+
+            const data = await res.json();
+            if (data.status === 'ok') {
+                statusMsg.textContent = 'Post published successfully! Redirecting...';
+                statusMsg.className = 'text-xs text-center text-emerald-600 font-semibold block';
+                setTimeout(() => {
+                    window.location.href = data.post.url;
+                }, 1000);
+            } else {
+                statusMsg.textContent = 'Error: ' + (data.error || 'Failed to save');
+                statusMsg.className = 'text-xs text-center text-red-600 block';
+                submitBtnText.innerText = 'Publish Post';
+                submitBtn.disabled = false;
+            }
+        } catch(e) {
+            statusMsg.textContent = 'Network error: ' + e.message;
+            statusMsg.className = 'text-xs text-center text-red-600 block';
+            submitBtnText.innerText = 'Publish Post';
+            submitBtn.disabled = false;
+        }
+    }
+</script>
+{% endblock %}
