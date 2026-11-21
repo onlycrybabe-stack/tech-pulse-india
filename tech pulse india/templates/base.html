@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="{{ current_lang|default('en') }}" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% if current_lang == 'hi' %}Tech Pulse India — भविष्य के गैजेट्स व तकनीक{% else %}Tech Pulse India — Future Tech &amp; Gadgets{% endif %}{% endblock %}</title>
+    
+    <!-- Favicon / Logo -->
+    <link rel="icon" type="image/svg+xml" href="/static/images/logo.svg">
+    
+    <!-- Google Search Console Verification -->
+    <meta name="google-site-verification" content="fXvbrt1YglgkP69jPyR6BJ-wCXLderLSyWjohy66ywY" />
+    <meta name="google-site-verification" content="{{ gsc_code }}">
+    
+    <!-- Primary SEO Meta Tags -->
+    <meta name="title" content="{% block meta_title %}{% if current_lang == 'hi' %}Tech Pulse India — भविष्य के गैजेट्स व हार्डवेयर पत्रिका{% else %}Tech Pulse India — Future Tech &amp; Hardware Journal{% endif %}{% endblock %}">
+    <meta name="description" content="{% block meta_description %}{% if current_lang == 'hi' %}Tech Pulse India भविष्य के स्मार्टफोन, लैपटॉप, ईयरफोन, स्मार्टवॉच और फास्ट चार्जर्स का विस्तृत तकनीकी विश्लेषण और भारतीय बाजार में कीमत प्रस्तुत करता है।{% else %}Tech Pulse India delivers in-depth technical breakdowns, India pricing, comparison matrices, and hardware reviews of next-gen gadgets.{% endif %}{% endblock %}">
+    <meta name="keywords" content="{% block meta_keywords %}future tech, smartphones, laptops, smartwatches, earphones, GaN chargers, wireless power, microLED, mini PC, hindi tech blog, english tech blog, tech pulse india{% endblock %}">
+    <meta name="author" content="Tech Pulse India Editorial">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    
+    <!-- Canonical & Bidirectional Multilingual Hreflang Tags -->
+    <link rel="canonical" href="{{ canonical_url }}">
+    {% if alternate_urls %}
+    <link rel="alternate" hreflang="en" href="{{ alternate_urls.en }}">
+    <link rel="alternate" hreflang="hi" href="{{ alternate_urls.hi }}">
+    <link rel="alternate" hreflang="x-default" href="{{ alternate_urls.en }}">
+    {% endif %}
+    
+    <!-- Open Graph / Facebook / LinkedIn / WhatsApp -->
+    <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+    <meta property="og:url" content="{{ canonical_url }}">
+    <meta property="og:site_name" content="Tech Pulse India">
+    <meta property="og:title" content="{% block og_title %}{% if current_lang == 'hi' %}Tech Pulse India — भविष्य के गैजेट्स व हार्डवेयर पत्रिका{% else %}Tech Pulse India — Future Tech &amp; Hardware Journal{% endif %}{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}{% if current_lang == 'hi' %}भविष्य के स्मार्टफोन, लैपटॉप, ईयरफोन और चार्जर्स का हिंदी में संपूर्ण विश्लेषण।{% else %}Discover future smartphones, laptops, earphones, smartwatches, and chargers with India pricing and specs.{% endif %}{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}{{ site_base_url }}/static/images/logo.svg{% endblock %}">
+    <meta property="og:locale" content="{% if current_lang == 'hi' %}hi_IN{% else %}en_US{% endif %}">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="{{ canonical_url }}">
+    <meta name="twitter:title" content="{% block twitter_title %}{% if current_lang == 'hi' %}Tech Pulse India — भविष्य के गैजेट्स{% else %}Tech Pulse India — Future Tech &amp; Hardware Journal{% endif %}{% endblock %}">
+    <meta name="twitter:description" content="{% block twitter_description %}{% if current_lang == 'hi' %}भविष्य के हार्डवेयर का तकनीकी रिव्यू और भारतीय कीमत।{% else %}Future hardware and gadget editorial breakdowns with India pricing and spec comparisons.{% endif %}{% endblock %}">
+    <meta name="twitter:image" content="{% block twitter_image %}{{ site_base_url }}/static/images/logo.svg{% endblock %}">
+    
+    <!-- Theme & Discovery -->
+    <meta name="theme-color" content="#0284c7">
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
+    
+    <!-- JSON-LD Structured Data: WebSite & Organization (Google Search Rich Results) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "{{ site_base_url }}/#website",
+          "url": "{{ site_base_url }}/",
+          "name": "Tech Pulse India",
+          "description": "{% if current_lang == 'hi' %}भविष्य के गैजेट्स व हार्डवेयर पत्रिका{% else %}Future Tech & Hardware Journal with India Pricing & Comparisons{% endif %}",
+          "publisher": {
+            "@id": "{{ site_base_url }}/#organization"
+          },
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "{{ site_base_url }}/?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+          },
+          "inLanguage": ["en", "hi"]
+        },
+        {
+          "@type": "Organization",
+          "@id": "{{ site_base_url }}/#organization",
+          "name": "Tech Pulse India",
+          "url": "{{ site_base_url }}/",
+          "email": "rprrpf1@gmail.com",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "{{ site_base_url }}/static/images/logo.svg"
+          },
+          "contactPoint": {
+            "@type": "ContactPoint",
+            "email": "rprrpf1@gmail.com",
+            "contactType": "editorial & reader support"
+          }
+        }
+      ]
+    }
+    </script>
+    
+    <!-- Google Fonts: Inter & Noto Sans Devanagari -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'Noto Sans Devanagari', 'system-ui', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                        hindi: ['Noto Sans Devanagari', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        .hindi-text {
+            font-family: 'Noto Sans Devanagari', sans-serif;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+    {% block head %}{% endblock %}
+</head>
+<body class="min-h-screen flex flex-col antialiased bg-white text-slate-900 selection:bg-cyan-100 selection:text-cyan-900">
+
+    <!-- Minimal Modern Header -->
+    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200/80">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+            
+            <!-- Tech Pulse India Logo & Brand -->
+            <a href="{{ '/hi/' if current_lang == 'hi' else '/' }}" class="flex items-center gap-2.5 hover:opacity-90 transition-opacity">
+                <img src="/static/images/logo.svg" alt="Tech Pulse India Logo" class="w-8 h-8 rounded-lg shadow-sm">
+                <div class="flex flex-col">
+                    <span class="text-base font-bold tracking-tight text-slate-900 leading-tight">
+                        Tech Pulse <span class="text-cyan-600 font-extrabold">India</span>
+                    </span>
+                    <span class="text-[9px] uppercase tracking-wider font-semibold text-slate-400">
+                        {% if current_lang == 'hi' %}भविष्य के गैजेट्स{% else %}Future Gadgets{% endif %}
+                    </span>
+                </div>
+            </a>
+
+            <!-- Search Bar in Header -->
+            <form action="{{ '/hi/' if current_lang == 'hi' else '/' }}" method="GET" class="hidden sm:flex items-center relative w-64 lg:w-80">
+                <i data-lucide="search" class="w-3.5 h-3.5 text-slate-400 absolute left-3"></i>
+                <input 
+                    type="text" 
+                    name="q" 
+                    value="{{ query if query else '' }}" 
+                    placeholder="{% if current_lang == 'hi' %}स्मार्टफोन, लैपटॉप, वॉच खोजें...{% else %}Search phones, laptops, watches, chargers...{% endif %}" 
+                    class="w-full pl-8 pr-3 py-1.5 bg-slate-100/80 border border-slate-200 rounded-lg text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-slate-400 focus:bg-white transition-all"
+                >
+            </form>
+
+            <!-- Language Switcher: Dedicated Dedicated Language URLs -->
+            <div class="flex items-center gap-3">
+                <div class="flex items-center bg-slate-100 border border-slate-200 rounded-lg p-0.5 text-xs font-medium">
+                    <a href="{{ alternate_urls.en if alternate_urls else '/' }}" 
+                       class="px-2.5 py-1 rounded-md transition-all {% if current_lang == 'en' %}bg-white text-slate-900 shadow-sm font-semibold{% else %}text-slate-500 hover:text-slate-900 font-medium{% endif %}">
+                        EN
+                    </a>
+                    <a href="{{ alternate_urls.hi if alternate_urls else '/hi/' }}" 
+                       class="px-2.5 py-1 rounded-md transition-all {% if current_lang == 'hi' %}bg-white text-slate-900 shadow-sm font-semibold{% else %}text-slate-500 hover:text-slate-900 font-medium{% endif %} hindi-text">
+                        हिन्दी
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Clean Modern Footer with Copyright & Disclaimer -->
+    <footer class="border-t border-slate-200 bg-slate-50/70 mt-20 py-12">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6">
+            
+            <!-- Footer Upper Row -->
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 pb-8 border-b border-slate-200/80">
+                <div class="flex items-center gap-2.5">
+                    <img src="/static/images/logo.svg" alt="Tech Pulse India Logo" class="w-7 h-7 rounded-lg">
+                    <span class="text-base font-bold text-slate-900 tracking-tight">
+                        Tech Pulse <span class="text-cyan-600 font-extrabold">India</span>
+                    </span>
+                    <span class="text-slate-300">•</span>
+                    {% if current_lang == 'hi' %}
+                    <span class="text-xs text-slate-500 hindi-text">भविष्य की तकनीक व गैजेट पत्रिका</span>
+                    {% else %}
+                    <span class="text-xs text-slate-500">Future Tech &amp; Hardware Journal</span>
+                    {% endif %}
+                </div>
+
+                <div class="text-xs text-slate-500">
+                    {% if current_lang == 'hi' %}
+                    <span class="hindi-text">स्मार्टफोन • लैपटॉप • ईयरफोन • स्मार्टवॉच • चार्जर • डेस्कटॉप</span>
+                    {% else %}
+                    <span>Smartphones • Laptops • Earphones • Smartwatches • Chargers • Desktops</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Footer Lower Row: Copyright, Developer Contact & Info -->
+            <div class="pt-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-xs text-slate-500">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
+                    <p class="font-medium text-slate-600">
+                        {% if current_lang == 'hi' %}
+                        &copy; 2026 Tech Pulse India. सर्वाधिकार सुरक्षित।
+                        {% else %}
+                        &copy; 2026 Tech Pulse India. All rights reserved.
+                        {% endif %}
+                    </p>
+                    <span class="hidden sm:inline text-slate-300">•</span>
+                    <a href="mailto:rprrpf1@gmail.com" class="inline-flex items-center gap-1.5 text-slate-500 hover:text-cyan-600 transition-colors font-medium">
+                        <i data-lucide="mail" class="w-3.5 h-3.5 text-slate-400"></i>
+                        <span>{% if current_lang == 'hi' %}संपर्क करें{% else %}Contact Us{% endif %}</span>
+                    </a>
+                </div>
+                <div class="flex items-center gap-3 text-[11px] text-slate-400">
+                    <a href="{{ alternate_urls.en if alternate_urls else '/' }}" class="hover:underline {% if current_lang == 'en' %}font-bold text-slate-600{% endif %}">English Edition</a>
+                    <span>•</span>
+                    <a href="{{ alternate_urls.hi if alternate_urls else '/hi/' }}" class="hover:underline hindi-text {% if current_lang == 'hi' %}font-bold text-slate-600{% endif %}">हिन्दी संस्करण</a>
+                    <span>•</span>
+                    <span>Independent Tech Journal</span>
+                </div>
+            </div>
+
+            <!-- Full Disclaimer Section -->
+            <div class="mt-6 pt-6 border-t border-slate-200/60 text-[11px] text-slate-400 leading-relaxed">
+                {% if current_lang == 'hi' %}
+                <p class="hindi-text">
+                    <strong class="text-slate-600">अस्वीकरण (Disclaimer):</strong> Tech Pulse India एक स्वतंत्र टेक प्रकाशन है जो भविष्य के उपभोक्ता हार्डवेयर का विस्तृत संपादकीय विश्लेषण, विनिर्देश और भारतीय मूल्य निर्धारण प्रस्तुत करता है। सभी वीडियो सामग्री, ट्रेडमार्क, ब्रांड नाम और उत्पाद चित्र (जैसे Apple, Samsung, Qualcomm, Intel, Google आदि) उनके संबंधित स्वामियों के हैं। एम्बेडेड वीडियो यूट्यूब द्वारा आधिकारिक रूप से शैक्षिक व समीक्षा उद्देश्यों के लिए प्रदर्शित किए जाते हैं।
+                </p>
+                {% else %}
+                <p>
+                    <strong class="text-slate-600">Disclaimer:</strong> Tech Pulse India is an independent consumer technology publication providing comprehensive technical breakdowns, India pricing guides, hardware spec matrices, and editorial evaluations. All video content, trademarks, brand names, and product imagery belong strictly to their respective copyright holders. Embedded videos are hosted by YouTube and served via their official player for educational, news reporting, and review purposes.
+                </p>
+                {% endif %}
+            </div>
+
+        </div>
+    </footer>
+
+    <!-- Global Scripts -->
+    <script>
+        function initIcons() {
+            if (typeof lucide !== 'undefined' && lucide.createIcons) {
+                lucide.createIcons();
+            }
+        }
+        document.addEventListener('DOMContentLoaded', initIcons);
+    </script>
+</body>
+</html>

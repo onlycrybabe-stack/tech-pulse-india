@@ -1,0 +1,444 @@
+{% extends "base.html" %}
+
+{% set c = post.hi if current_lang == 'hi' else post.en %}
+{% set p_india = post.pricing_india_hi if (current_lang == 'hi' and post.pricing_india_hi) else post.pricing_india %}
+{% set comp = post.comparison %}
+{% set comp_headers = comp.headers_hi if (current_lang == 'hi' and comp.headers_hi) else comp.headers_en if comp else [] %}
+{% set comp_rows = comp.rows_hi if (current_lang == 'hi' and comp.rows_hi) else comp.rows_en if comp else [] %}
+{% set verd = post.verdict %}
+
+{% block title %}{{ c.title }} — Tech Pulse India{% endblock %}
+{% block meta_title %}{{ c.title }} | Tech Pulse India{% endblock %}
+{% block meta_description %}{{ c.summary }}{% endblock %}
+{% block meta_keywords %}{{ post.tags|join(', ') }}, {{ post.category }}, {% if current_lang == 'hi' %}भारतीय कीमत, स्पेसिफिकेशन{% else %}India price, specs breakdown, hardware review{% endif %}{% endblock %}
+{% block og_type %}article{% endblock %}
+{% block og_title %}{{ c.title }} — Tech Pulse India{% endblock %}
+{% block og_description %}{{ c.summary }}{% endblock %}
+{% block og_image %}{{ post.thumbnail }}{% endblock %}
+{% block twitter_title %}{{ c.title }} — Tech Pulse India{% endblock %}
+{% block twitter_description %}{{ c.summary }}{% endblock %}
+{% block twitter_image %}{{ post.thumbnail }}{% endblock %}
+
+{% block head %}
+<!-- Article & Product Schema.org Structured Data with INR Pricing for Google Rich Snippets -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      "@id": "{{ canonical_url }}#article",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "{{ canonical_url }}"
+      },
+      "headline": {{ c.title|tojson }},
+      "description": {{ c.summary|tojson }},
+      "image": [{{ post.thumbnail|tojson }}],
+      "datePublished": "{{ post.published_date }}T00:00:00+05:30",
+      "dateModified": "{{ post.published_date }}T00:00:00+05:30",
+      "author": {
+        "@type": "Person",
+        "name": {{ post.channel_name|tojson }}
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Tech Pulse India",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "{{ site_base_url }}/static/images/logo.svg"
+        }
+      },
+      "inLanguage": "{{ current_lang }}",
+      "articleSection": "{{ post.category_hi if current_lang == 'hi' else post.category }}",
+      "keywords": {{ post.tags|join(', ')|tojson }},
+      "video": {
+        "@type": "VideoObject",
+        "name": {{ c.title|tojson }},
+        "description": {{ c.summary|tojson }},
+        "thumbnailUrl": [{{ post.thumbnail|tojson }}],
+        "uploadDate": "{{ post.published_date }}T00:00:00+05:30",
+        "embedUrl": "https://www.youtube-nocookie.com/embed/{{ post.video_id }}"
+      }
+    }{% if p_india %},
+    {
+      "@type": "Product",
+      "@id": "{{ canonical_url }}#product",
+      "name": {{ c.title|tojson }},
+      "image": [{{ post.thumbnail|tojson }}],
+      "description": {{ c.summary|tojson }},
+      "brand": {
+        "@type": "Brand",
+        "name": "{{ post.tags[0] if post.tags else 'Tech Hardware' }}"
+      },
+      "offers": {
+        "@type": "AggregateOffer",
+        "priceCurrency": "INR",
+        "lowPrice": "{{ p_india.base_price.replace('₹','').replace(',','').split(' ')[0] if p_india.base_price else '49999' }}",
+        "offerCount": "{{ p_india.variants|length if p_india.variants else 1 }}",
+        "availability": "https://schema.org/InStock"
+      }
+    }{% endif %}
+  ]
+}
+</script>
+<style>
+    .article-content p {
+        margin-bottom: 1.35rem;
+        line-height: 1.85;
+        color: #334155;
+    }
+    .article-content h2, .article-content h3 {
+        color: #0f172a;
+        font-weight: 700;
+        margin-top: 2.25rem;
+        margin-bottom: 0.85rem;
+        letter-spacing: -0.02em;
+    }
+    .article-content ul, .article-content ol {
+        margin-bottom: 1.35rem;
+        color: #334155;
+        padding-left: 1.25rem;
+    }
+    .article-content li {
+        margin-bottom: 0.5rem;
+    }
+    .article-content code {
+        font-family: 'JetBrains Mono', monospace;
+        background: #f1f5f9;
+        color: #0284c7;
+        padding: 0.2rem 0.4rem;
+        border-radius: 0.35rem;
+        font-size: 0.875em;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 py-8">
+
+    <!-- Back Navigation Link -->
+    <div class="mb-6">
+        <a href="{{ '/hi/' if current_lang == 'hi' else '/' }}" class="text-xs text-slate-500 hover:text-slate-900 transition-colors inline-flex items-center gap-1.5 font-medium">
+            ← <span>{% if current_lang == 'hi' %}सभी लेखों पर लौटें{% else %}All Hardware Articles{% endif %}</span>
+        </a>
+    </div>
+
+    <!-- Article Header -->
+    <header class="mb-8">
+        <div class="flex items-center gap-2 text-xs text-slate-500 mb-3">
+            <span class="text-cyan-600 font-semibold">
+                {% if current_lang == 'hi' %}{{ post.category_hi }}{% else %}{{ post.category }}{% endif %}
+            </span>
+            <span>•</span>
+            <span>{{ post.published_date }}</span>
+            <span>•</span>
+            <span>{% if current_lang == 'hi' %}{{ post.reading_time_hi }}{% else %}{{ post.reading_time }}{% endif %}</span>
+            <span>•</span>
+            <a href="{{ post.youtube_url }}" target="_blank" rel="noopener noreferrer" class="text-red-500 hover:underline inline-flex items-center gap-1 font-medium">
+                <i data-lucide="youtube" class="w-3.5 h-3.5"></i>
+                {{ post.channel_name }}
+            </a>
+        </div>
+
+        <h1 class="text-2xl sm:text-4xl font-bold tracking-tight text-slate-900 mb-4 leading-tight">
+            {{ c.title }}
+        </h1>
+
+        <p class="text-sm sm:text-base text-slate-600 leading-relaxed">
+            {{ c.summary }}
+        </p>
+    </header>
+
+    <!-- Embedded Responsive YouTube Player -->
+    <div class="mb-8 rounded-2xl overflow-hidden border border-slate-200 bg-black aspect-video shadow-sm">
+        <iframe 
+            class="w-full h-full"
+            src="https://www.youtube-nocookie.com/embed/{{ post.video_id }}?rel=0" 
+            title="{{ c.title }}" 
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            allowfullscreen>
+        </iframe>
+    </div>
+
+    <!-- Utility Bar: Share and Language Switch Indicator -->
+    <div class="flex items-center justify-between pb-4 mb-8 border-b border-slate-100 text-xs text-slate-500">
+        <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-cyan-600"></span>
+            <span class="font-medium text-slate-700">
+                {% if current_lang == 'hi' %}विस्तृत संपादकीय व हार्डवेयर विश्लेषण{% else %}In-Depth Editorial &amp; Hardware Analysis{% endif %}
+            </span>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <a href="{{ alternate_urls.hi if current_lang == 'en' else alternate_urls.en }}" 
+               class="text-xs text-cyan-600 hover:text-cyan-700 font-medium inline-flex items-center gap-1 bg-cyan-50 px-2.5 py-1 rounded-md border border-cyan-100 transition-colors">
+                <i data-lucide="globe" class="w-3 h-3"></i>
+                <span>{% if current_lang == 'en' %}Read in हिन्दी{% else %}Read in English{% endif %}</span>
+            </a>
+            <button onclick="copyArticleLink()" id="copy-btn" class="text-xs text-slate-500 hover:text-slate-900 transition-colors inline-flex items-center gap-1.5 font-medium px-2.5 py-1 rounded-md hover:bg-slate-100">
+                <i data-lucide="share-2" class="w-3.5 h-3.5"></i>
+                <span id="copy-text">{% if current_lang == 'hi' %}शेयर करें{% else %}Share Article{% endif %}</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- SECTION 1: INDIA-SPECIFIC PRICING & AVAILABILITY CARD -->
+    {% if p_india %}
+    <div class="mb-10 p-6 sm:p-7 rounded-2xl border border-emerald-200 bg-emerald-50/50 shadow-xs">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-emerald-200/70">
+            <div>
+                <span class="text-[11px] font-bold text-emerald-800 uppercase tracking-wider bg-emerald-100 px-2.5 py-1 rounded-md">
+                    {% if current_lang == 'hi' %}भारतीय बाजार में कीमत व उपलब्धता{% else %}India Pricing &amp; Availability{% endif %}
+                </span>
+                <h3 class="text-xl sm:text-2xl font-bold text-slate-900 mt-2">
+                    {{ p_india.base_price }} <span class="text-xs font-normal text-slate-500">({{ p_india.price_range }})</span>
+                </h3>
+            </div>
+            <div class="text-left sm:text-right text-xs text-slate-600">
+                <p class="font-semibold text-slate-800">{% if current_lang == 'hi' %}उपलब्धता स्थिति:{% else %}Launch Status:{% endif %}</p>
+                <p class="text-emerald-700 font-medium">{{ p_india.expected_launch }}</p>
+                <p class="text-[11px] text-slate-500 mt-0.5">{{ p_india.availability }}</p>
+            </div>
+        </div>
+
+        {% if p_india.bank_offers %}
+        <div class="mt-4 flex items-start gap-2 text-xs text-emerald-900 bg-white/80 p-3 rounded-xl border border-emerald-200/80">
+            <i data-lucide="tag" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+            <div>
+                <strong class="font-semibold">{% if current_lang == 'hi' %}बैंक ऑफर्स:{% else %}Bank Offers &amp; Launch Discounts:{% endif %}</strong>
+                <span>{{ p_india.bank_offers }}</span>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if p_india.variants %}
+        <div class="mt-4">
+            <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">
+                {% if current_lang == 'hi' %}वैरिएंट्स व कीमतें:{% else %}Available Variants &amp; Pricing:{% endif %}
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+                {% for v in p_india.variants %}
+                <div class="bg-white p-2.5 rounded-lg border border-emerald-100 flex items-center justify-between">
+                    <span class="font-medium text-slate-700">{{ v.ram_storage }}</span>
+                    <span class="font-bold text-emerald-700">{{ v.price }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- SECTION 2: KEY TAKEAWAYS -->
+    {% if c.key_takeaways %}
+    <div class="mb-10 p-6 rounded-2xl border border-cyan-100 bg-cyan-50/60">
+        <h3 class="text-xs font-bold text-cyan-900 uppercase tracking-wider mb-3 flex items-center gap-2">
+            <i data-lucide="zap" class="w-4 h-4 text-cyan-600"></i>
+            <span>{% if current_lang == 'hi' %}मुख्य निष्कर्ष (Key Takeaways){% else %}Key Hardware Takeaways{% endif %}</span>
+        </h3>
+        <ul class="space-y-2 text-xs sm:text-sm text-slate-700 list-disc list-inside">
+            {% for item in c.key_takeaways %}
+            <li>{{ item }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <!-- SECTION 3: TECHNICAL SPECIFICATIONS BREAKDOWN GRID -->
+    {% if post.specs %}
+    {% set s = post.specs %}
+    <div class="mb-12">
+        <div class="flex items-center gap-2 mb-4">
+            <i data-lucide="cpu" class="w-4 h-4 text-cyan-600"></i>
+            <h2 class="text-lg font-bold text-slate-900 tracking-tight m-0">
+                {% if current_lang == 'hi' %}विस्तृत हार्डवेयर स्पेसिफिकेशन्स{% else %}Detailed Hardware Specifications Breakdown{% endif %}
+            </h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+            <div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50/60">
+                <span class="text-[10px] font-bold uppercase text-slate-400 block mb-1">{% if current_lang == 'hi' %}डिस्प्ले (Display){% else %}Display &amp; Panel{% endif %}</span>
+                <p class="font-medium text-slate-800 leading-snug">{% if current_lang == 'hi' %}{{ s.display_hi }}{% else %}{{ s.display }}{% endif %}</p>
+            </div>
+            <div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50/60">
+                <span class="text-[10px] font-bold uppercase text-slate-400 block mb-1">{% if current_lang == 'hi' %}प्रोसेसर व सिलिकॉन (Processor){% else %}Processor &amp; Silicon{% endif %}</span>
+                <p class="font-medium text-slate-800 leading-snug">{% if current_lang == 'hi' %}{{ s.processor_hi }}{% else %}{{ s.processor }}{% endif %}</p>
+            </div>
+            <div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50/60">
+                <span class="text-[10px] font-bold uppercase text-slate-400 block mb-1">{% if current_lang == 'hi' %}रियर कैमरा सेटअप (Rear Camera){% else %}Rear Camera Array{% endif %}</span>
+                <p class="font-medium text-slate-800 leading-snug">{% if current_lang == 'hi' %}{{ s.rear_camera_hi }}{% else %}{{ s.rear_camera }}{% endif %}</p>
+            </div>
+            <div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50/60">
+                <span class="text-[10px] font-bold uppercase text-slate-400 block mb-1">{% if current_lang == 'hi' %}सेल्फी कैमरा (Front Camera){% else %}Front Camera{% endif %}</span>
+                <p class="font-medium text-slate-800 leading-snug">{% if current_lang == 'hi' %}{{ s.front_camera_hi }}{% else %}{{ s.front_camera }}{% endif %}</p>
+            </div>
+            <div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50/60">
+                <span class="text-[10px] font-bold uppercase text-slate-400 block mb-1">{% if current_lang == 'hi' %}बैटरी व चार्जिंग (Battery &amp; Charging){% else %}Battery &amp; Charging Tech{% endif %}</span>
+                <p class="font-medium text-slate-800 leading-snug">{% if current_lang == 'hi' %}{{ s.battery_charging_hi }}{% else %}{{ s.battery_charging }}{% endif %}</p>
+            </div>
+            <div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50/60">
+                <span class="text-[10px] font-bold uppercase text-slate-400 block mb-1">{% if current_lang == 'hi' %}सॉफ्टवेयर व अपडेट्स (Software){% else %}OS &amp; Software Support{% endif %}</span>
+                <p class="font-medium text-slate-800 leading-snug">{% if current_lang == 'hi' %}{{ s.os_updates_hi }}{% else %}{{ s.os_updates }}{% endif %}</p>
+            </div>
+            <div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50/60 md:col-span-2">
+                <span class="text-[10px] font-bold uppercase text-slate-400 block mb-1">{% if current_lang == 'hi' %}बिल्ड व वॉटर रेसिस्टेंस (Build &amp; Protection){% else %}Build Quality &amp; Water Resistance{% endif %}</span>
+                <p class="font-medium text-slate-800 leading-snug">{% if current_lang == 'hi' %}{{ s.build_ip_hi }}{% else %}{{ s.build_ip }}{% endif %}</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- SECTION 4: IN-DEPTH EDITORIAL ANALYSIS CONTENT -->
+    <div class="article-content text-sm sm:text-base border-t border-slate-200 pt-8 mb-12">
+        {{ c.content_html|safe }}
+    </div>
+
+    <!-- SECTION 5: HEAD-TO-HEAD COMPARISON TABLE WITH RIVALS -->
+    {% if comp and comp_headers and comp_rows %}
+    <div class="mb-12">
+        <div class="flex items-center gap-2 mb-4">
+            <i data-lucide="scale" class="w-4 h-4 text-cyan-600"></i>
+            <h2 class="text-lg font-bold text-slate-900 tracking-tight m-0">
+                {% if current_lang == 'hi' %}{{ comp.title_hi }}{% else %}{{ comp.title_en }}{% endif %}
+            </h2>
+        </div>
+
+        <div class="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-xs">
+            <table class="w-full text-left text-xs">
+                <thead>
+                    <tr class="bg-slate-100/80 border-b border-slate-200 text-slate-700 font-bold">
+                        {% for h in comp_headers %}
+                        <th class="p-3.5 {% if loop.first %}w-1/4{% endif %}">{{ h }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    {% for row in comp_rows %}
+                    <tr class="hover:bg-slate-50/80 transition-colors">
+                        <td class="p-3.5 font-semibold text-slate-800">{{ row.feature }}</td>
+                        <td class="p-3.5 text-cyan-700 font-medium">{{ row.col1 }}</td>
+                        <td class="p-3.5 text-slate-600">{{ row.col2 }}</td>
+                        {% if row.col3 %}
+                        <td class="p-3.5 text-slate-600">{{ row.col3 }}</td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- SECTION 6: EDITORIAL VERDICT & BUYING GUIDE -->
+    {% if verd %}
+    <div class="mb-12 p-6 sm:p-7 rounded-2xl border border-slate-200 bg-slate-50/80">
+        <div class="flex items-center justify-between pb-4 mb-4 border-b border-slate-200">
+            <div>
+                <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
+                    {% if current_lang == 'hi' %}टेक पल्स संपादकीय फैसला{% else %}Tech Pulse India Verdict{% endif %}
+                </span>
+                <h3 class="text-lg font-bold text-slate-900 mt-1">
+                    {% if current_lang == 'hi' %}अंतिम निष्कर्ष व रेटिंग{% else %}Final Buying Advice &amp; Score{% endif %}
+                </h3>
+            </div>
+            {% if verd.score %}
+            <div class="text-right">
+                <span class="text-2xl sm:text-3xl font-extrabold text-cyan-600">
+                    {{ verd.score }}<span class="text-xs font-normal text-slate-400"> / 10</span>
+                </span>
+            </div>
+            {% endif %}
+        </div>
+
+        <p class="text-xs sm:text-sm text-slate-700 leading-relaxed mb-6 font-medium">
+            {% if current_lang == 'hi' %}{{ verd.summary_hi }}{% else %}{{ verd.summary_en }}{% endif %}
+        </p>
+
+        <!-- Pros and Cons Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+            <div class="p-4 rounded-xl bg-white border border-emerald-100">
+                <h4 class="text-xs font-bold text-emerald-800 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                    <i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-600"></i>
+                    <span>{% if current_lang == 'hi' %}खूबियां (Pros){% else %}What We Loved (Pros){% endif %}</span>
+                </h4>
+                <ul class="space-y-1.5 text-xs text-slate-600 list-disc list-inside">
+                    {% for pro in (verd.pros_hi if current_lang == 'hi' else verd.pros_en) %}
+                    <li>{{ pro }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="p-4 rounded-xl bg-white border border-amber-100">
+                <h4 class="text-xs font-bold text-amber-800 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                    <i data-lucide="alert-circle" class="w-3.5 h-3.5 text-amber-600"></i>
+                    <span>{% if current_lang == 'hi' %}कमियां (Cons){% else %}Room for Improvement (Cons){% endif %}</span>
+                </h4>
+                <ul class="space-y-1.5 text-xs text-slate-600 list-disc list-inside">
+                    {% for con in (verd.cons_hi if current_lang == 'hi' else verd.cons_en) %}
+                    <li>{{ con }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <!-- Who should buy / skip -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs pt-4 border-t border-slate-200">
+            <div>
+                <strong class="text-slate-900 block mb-1">
+                    {% if current_lang == 'hi' %}किन्हें खरीदना चाहिए?{% else %}Who Should Buy This:{% endif %}
+                </strong>
+                <p class="text-slate-600 leading-relaxed">
+                    {% if current_lang == 'hi' %}{{ verd.who_should_buy_hi }}{% else %}{{ verd.who_should_buy_en }}{% endif %}
+                </p>
+            </div>
+            <div>
+                <strong class="text-slate-900 block mb-1">
+                    {% if current_lang == 'hi' %}किन्हें रुकना / छोड़ना चाहिए?{% else %}Who Should Wait / Skip:{% endif %}
+                </strong>
+                <p class="text-slate-600 leading-relaxed">
+                    {% if current_lang == 'hi' %}{{ verd.who_should_skip_hi }}{% else %}{{ verd.who_should_skip_en }}{% endif %}
+                </p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- RELATED ARTICLES -->
+    {% if related %}
+    <div class="border-t border-slate-200 pt-10">
+        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">
+            {% if current_lang == 'hi' %}संबंधित लेख{% else %}Related Hardware Articles{% endif %}
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {% for r in related %}
+            <a href="{{ ('/hi/post/' ~ r.slug) if current_lang == 'hi' else ('/post/' ~ r.slug) }}" class="group block p-3.5 rounded-xl border border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-all">
+                <p class="text-[10px] font-semibold text-cyan-600 mb-1">
+                    {% if current_lang == 'hi' %}{{ r.category_hi }}{% else %}{{ r.category }}{% endif %}
+                </p>
+                <h4 class="text-xs font-bold text-slate-900 group-hover:text-cyan-600 transition-colors line-clamp-2">
+                    {% if current_lang == 'hi' %}{{ r.hi.title }}{% else %}{{ r.en.title }}{% endif %}
+                </h4>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+
+<script>
+    function copyArticleLink() {
+        const url = window.location.href;
+        navigator.clipboard.writeText(url).then(() => {
+            const btnText = document.getElementById('copy-text');
+            const original = btnText.innerText;
+            btnText.innerText = "{% if current_lang == 'hi' %}लिंक कॉपी हुआ!{% else %}Link Copied!{% endif %}";
+            setTimeout(() => {
+                btnText.innerText = original;
+            }, 2000);
+        });
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}404 - Article Not Found | Tech Pulse India{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto px-4 py-24 text-center">
+    <div class="w-16 h-16 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center mx-auto mb-6 text-slate-500">
+        <i data-lucide="alert-triangle" class="w-8 h-8 text-cyan-600"></i>
+    </div>
+    <h1 class="text-2xl sm:text-3xl font-bold text-slate-900 mb-3">
+        {% if current_lang == 'hi' %}लेख नहीं मिला (404){% else %}Article Not Found (404){% endif %}
+    </h1>
+    <p class="text-slate-600 text-sm mb-8">
+        {% if current_lang == 'hi' %}
+        आप जिस टेक लेख की तलाश कर रहे हैं वह मौजूद नहीं है या हटा दिया गया है।
+        {% else %}
+        The hardware review or article you are looking for does not exist or may have been relocated.
+        {% endif %}
+    </p>
+    <a href="{{ '/hi/' if current_lang == 'hi' else '/' }}" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold shadow-sm transition-all">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+        <span>{% if current_lang == 'hi' %}मुख्य पृष्ठ पर लौटें{% else %}Return to Homepage{% endif %}</span>
+    </a>
+</div>
+{% endblock %}
